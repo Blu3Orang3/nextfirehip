@@ -1,7 +1,14 @@
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/auth';
-import 'firebase/compat/firestore';
-import 'firebase/compat/storage';
+import { initializeApp, getApps, getApp } from 'firebase/app';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import {
+  getFirestore,
+  collection,
+  where,
+  getDocs,
+  query,
+  limit,
+} from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyB8wcANp8EixTkYcQE8DGWMp9ExEn_Bt20',
@@ -12,10 +19,23 @@ const firebaseConfig = {
   appId: '1:811776919650:web:d92e31fa64f6c0464c693b',
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+function createFirebaseApp(config) {
+  try {
+    return getApp();
+  } catch {
+    return initializeApp(config);
+  }
 }
 
-export const auth = firebase.auth();
-export const firestore = firebase.firestore();
-export const storage = firebase.storage();
+const firebaseApp = createFirebaseApp(firebaseConfig);
+
+// Auth exports
+export const auth = getAuth(firebaseApp);
+export const googleAuthProvider = new GoogleAuthProvider();
+
+// Firestore exports
+export const firestore = getFirestore(firebaseApp);
+
+// Storage exports
+export const storage = getStorage(firebaseApp);
+export const STATE_CHANGED = 'state_changed';
